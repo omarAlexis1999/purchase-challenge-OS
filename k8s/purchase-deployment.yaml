@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purchase-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: purchase-challenge
+  template:
+    metadata:
+      labels:
+        app: purchase-challenge
+    spec:
+      containers:
+      - name: purchase-challenge
+        image: ${ACR_NAME}.azurecr.io/purchase-challenge:${IMAGE_TAG}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8093
+        envFrom:
+        - configMapRef:
+            name: general-config
+        - secretRef:
+            name: general-secret
+      imagePullSecrets:
+      - name: acr-secret
